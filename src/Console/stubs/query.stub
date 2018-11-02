@@ -1,0 +1,10 @@
+<?php
+
+namespace DummyNamespace;
+
+use Ruth\GraphQL\Query;
+
+class DummyClass extends Query
+{
+    //
+}

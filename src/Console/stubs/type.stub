@@ -1,0 +1,10 @@
+<?php
+
+namespace DummyNamespace;
+
+use Ruth\GraphQL\Type;
+
+class DummyClass extends Type
+{
+    //
+}
