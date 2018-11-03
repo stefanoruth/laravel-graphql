@@ -4,7 +4,7 @@ namespace Ruth\GraphQL;
 
 use GraphQL\Type\Definition\ObjectType;
 
-class Query
+class Query extends Base
 {
     public function fields()
     {

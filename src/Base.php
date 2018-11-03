@@ -2,7 +2,7 @@
 
 namespace Ruth\GraphQL;
 
-class Type
+class Base
 {
     //
 }
