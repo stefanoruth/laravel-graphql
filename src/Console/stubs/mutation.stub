@@ -6,5 +6,18 @@ use Ruth\GraphQL\Mutation;
 
 class DummyClass extends Mutation
 {
-    //
+    public function args()
+    {
+        //
+    }
+
+    public function fields()
+    {
+        //
+    }
+
+    public function resolve()
+    {
+        //
+    }
 }
