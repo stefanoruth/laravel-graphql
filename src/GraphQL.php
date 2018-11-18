@@ -33,7 +33,7 @@ class GraphQL
         }
 
         if (empty(static::$queries)) {
-            static::loadQueries(Ping::class);
+            static::loadQueries(PingPong::class);
         }
 
         return GraphQLCore::executeQuery(
@@ -130,7 +130,7 @@ class GraphQL
 
             return [$type => new ObjectType([
                 'name' => static::generateName($class),
-                'description' => $class->description,
+                'description' => $class->description ?? null,
                 'fields' => $class->fields(),
             ])];
         })->toArray();
