@@ -17,6 +17,11 @@
             "Ruth\\GraphQL\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Ruth\\GraphQL\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [

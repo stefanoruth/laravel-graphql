@@ -2,9 +2,22 @@
 
 namespace DummyNamespace;
 
-use Ruth\GraphQL\Query;
+use Ruth\GraphQL\Base\Query;
 
 class DummyClass extends Query
 {
-    //
+    public function args()
+    {
+        //
+    }
+
+    public function fields()
+    {
+        //
+    }
+
+    public function resolve()
+    {
+        //
+    }
 }

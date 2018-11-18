@@ -2,9 +2,22 @@
 
 namespace DummyNamespace;
 
-use Ruth\GraphQL\Mutation;
+use Ruth\GraphQL\Base\Mutation;
 
 class DummyClass extends Mutation
 {
-    //
+    public function args()
+    {
+        //
+    }
+
+    public function fields()
+    {
+        //
+    }
+
+    public function resolve()
+    {
+        //
+    }
 }
