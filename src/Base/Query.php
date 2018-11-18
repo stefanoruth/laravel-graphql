@@ -2,7 +2,7 @@
 
 namespace Ruth\GraphQL\Base;
 
-abstract class Query
+abstract class Query extends GraphQLBase
 {
     //
 }

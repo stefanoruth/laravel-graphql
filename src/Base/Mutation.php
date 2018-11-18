@@ -2,7 +2,7 @@
 
 namespace Ruth\GraphQL\Base;
 
-abstract class Mutation
+abstract class Mutation extends GraphQLBase
 {
     //
 }

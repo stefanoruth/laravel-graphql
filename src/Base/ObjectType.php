@@ -2,7 +2,7 @@
 
 namespace Ruth\GraphQL\Base;
 
-abstract class ObjectType
+abstract class ObjectType extends GraphQLBase
 {
     //
 }

@@ -4,24 +4,63 @@ namespace Ruth\GraphQL;
 
 use Illuminate\Support\Collection;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\GraphQL as GraphQLCore;
+use GraphQL\Type\Schema;
+use Exception;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Ruth\GraphQL\Base\GraphQLBase;
+use Symfony\Component\Finder\Finder;
 
 class GraphQL
 {
     public static $types = [];
+    public static $queries = [];
+    public static $mutations = [];
 
-    public static function loadTypes($types)
+    /**
+     * Build graphql server and execute a query against it
+     *
+     * @param string|null $query
+     * @param string|null $variables
+     * @param string|null $operationName
+     * @return \GraphQL\GraphQL
+     */
+    public static function executeQuery($query = null, $variables = null, $operationName = null)
     {
-        return static::$types = Collection::make($types)->mapWithKeys(function ($type) {
-            $class = new $type;
+        if (is_null($query)) {
+            throw new Exception('No Graphql query provided');
+        }
 
-            return [$type => new ObjectType([
-                'name' => static::generateName($class),
-                'description' => $class->description,
-                'fields' => $class->fields(),
-            ])];
-        })->toArray();
+        if (empty(static::$queries)) {
+            static::loadQueries(Ping::class);
+        }
+
+        return GraphQLCore::executeQuery(
+            new Schema([
+                'query' => new ObjectType([
+                    'name' => 'RootQuery',
+                    'fields' => static::$queries,
+                ]),
+                'mutation' => new ObjectType([
+                    'name' => 'RootMutation',
+                    'fields' => static::$mutations,
+                ]),
+            ]),
+            $query,
+            null,
+            null,
+            $variables,
+            $operationName
+        );
     }
 
+    /**
+     * Fetches an type from the type list if exists
+     *
+     * @param string $class
+     * @return object|null
+     */
     public static function type($class)
     {
         if (array_key_exists($class, static::$types)) {
@@ -29,6 +68,12 @@ class GraphQL
         }
     }
 
+    /**
+     * Convert a className into a valid GraphQl Endpoint name
+     *
+     * @param string $class
+     * @return string
+     */
     public static function generateName($class)
     {
         if (isset($class->name) && !is_null($class->name)) {
@@ -50,17 +95,54 @@ class GraphQL
         );
     }
 
+    /**
+     * Load query classes
+     *
+     * @param string[] $queries
+     * @return arrayd
+     */
     public static function loadQueries($queries)
     {
-        return static::load($queries);
+        return static::$queries = static::convertClassToGraphObject($queries);
     }
 
+    /**
+     * Load mutation classes
+     *
+     * @param string[] $mutations
+     * @return array
+     */
     public static function loadMutations($mutations)
     {
-        return static::load($mutations);
+        return static::$mutations = static::convertClassToGraphObject($mutations);
     }
 
-    public static function load($items)
+    /**
+     * Loads and converts type classNames into GraphQL Types.
+     *
+     * @param string[] $types
+     * @return array
+     */
+    public static function loadTypes($types)
+    {
+        return static::$types = Collection::make($types)->mapWithKeys(function ($type) {
+            $class = new $type;
+
+            return [$type => new ObjectType([
+                'name' => static::generateName($class),
+                'description' => $class->description,
+                'fields' => $class->fields(),
+            ])];
+        })->toArray();
+    }
+
+    /**
+     * Convert classPaths into graphql simple objects
+     *
+     * @param string[] $items
+     * @return void
+     */
+    public static function convertClassToGraphObject($items)
     {
         return Collection::make($items)->mapWithKeys(function ($item) {
             $class = new $item;
