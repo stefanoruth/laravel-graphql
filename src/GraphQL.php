@@ -39,7 +39,15 @@ class GraphQL
             $class = get_class($class);
         }
 
-        return preg_replace('/^(.+)\\\(.+)(Query|Type|Mutation)$/i', '$2', $class);
+        return preg_replace(
+            '/^(?:(?:.+)\\\)?(.+)/i',
+            '$1',
+            preg_replace(
+                '/(Query|Type|Mutation)$/',
+                '',
+                $class
+            )
+        );
     }
 
     public static function loadQueries($queries)

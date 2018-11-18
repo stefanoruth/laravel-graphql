@@ -13,5 +13,7 @@ class GraphQLTest extends TestCase
         $this->assertEquals('Baz', GraphQL::generateName('Foo\Bar\Baz'));
         $this->assertEquals('Baz', GraphQL::generateName('Foo\Bar\BazQuery'));
         $this->assertEquals('BazFoo', GraphQL::generateName('Foo\Bar\BazFooQuery'));
+        $this->assertEquals('Foo', GraphQL::generateName('FooMutation'));
+        $this->assertEquals('Foo', GraphQL::generateName('FooType'));
     }
 }
