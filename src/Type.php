@@ -10,4 +10,9 @@ class Type extends BaseType
     {
         return parent::listOf(GraphQL::type($wrappedType));
     }
+
+    public static function of($wrappedType)
+    {
+        return GraphQL::type($wrappedType);
+    }
 }
