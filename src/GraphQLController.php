@@ -30,6 +30,7 @@ class GraphQLController extends Controller
         ]);
 
         $queries = Kernel::loadQueries([
+            Ping::class,
             ListUsersQuery::class,
             ShowUserQuery::class,
         ]);

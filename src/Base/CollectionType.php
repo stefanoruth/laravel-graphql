@@ -1,6 +1,6 @@
 <?php
 
-namespace Ruth\GraphQL;
+namespace Ruth\GraphQL\Base;
 
 class CollectionType extends ObjectType
 {
