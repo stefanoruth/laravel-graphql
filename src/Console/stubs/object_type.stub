@@ -2,8 +2,8 @@
 
 namespace DummyNamespace;
 
+use Ruth\GraphQL\Type;
 use Ruth\GraphQL\Base\ObjectType;
-use GraphQL\Type\Definition\Type;
 
 class DummyClass extends ObjectType
 {

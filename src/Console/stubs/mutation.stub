@@ -2,7 +2,9 @@
 
 namespace DummyNamespace;
 
+use Ruth\GraphQL\Type;
 use Ruth\GraphQL\Base\Mutation;
+use GraphQL\Type\Definition\ResolveInfo;
 
 class DummyClass extends Mutation
 {
@@ -16,7 +18,7 @@ class DummyClass extends Mutation
         //
     }
 
-    public function resolve()
+    public function resolve($source, $args, $context, $info)
     {
         //
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ruth\GraphQL;
+namespace Ruth\GraphQL\Console;
 
 use Illuminate\Console\GeneratorCommand;
 
