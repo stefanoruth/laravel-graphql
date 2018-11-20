@@ -24,7 +24,7 @@ class GraphQLController extends Controller
                 $request->get('query'),
                 $request->get('variables'),
                 $request->get('operationName')
-            )->toArray()
+            )
         );
     }
 }

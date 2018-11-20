@@ -11,6 +11,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Ruth\GraphQL\Base\GraphQLBase;
 use Symfony\Component\Finder\Finder;
+use GraphQL\Validator\Rules\DisableIntrospection;
+use GraphQL\Validator\Rules\QueryComplexity;
 
 class GraphQL
 {
@@ -36,23 +38,41 @@ class GraphQL
             static::loadQueries(PingPong::class);
         }
 
-        return GraphQLCore::executeQuery(
-            new Schema([
-                'query' => new ObjectType([
-                    'name' => 'RootQuery',
-                    'fields' => static::$queries,
-                ]),
-                'mutation' => new ObjectType([
-                    'name' => 'RootMutation',
-                    'fields' => static::$mutations,
-                ]),
+        $rules = [];
+
+        if (config('graphql.introspection') === false) {
+            $rules[] = new DisableIntrospection;
+        }
+
+        if (($maxComplexity = config('graphql.max_query_complexity')) > 0) {
+            $rules[] = new QueryComplexity($maxComplexity);
+        }
+        
+        if (($maxDepth = config('graphql.max_query_depth')) > 0) {
+            $rules[] = new QueryDepth($maxDepth);
+        }
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'RootQuery',
+                'fields' => static::$queries,
             ]),
+            'mutation' => new ObjectType([
+                'name' => 'RootMutation',
+                'fields' => static::$mutations,
+            ]),
+        ]);
+
+        return GraphQLCore::executeQuery(
+            $schema,
             $query,
             null,
             null,
             $variables,
-            $operationName
-        );
+            $operationName,
+            null,
+            $rules
+        )->toArray();
     }
 
     /**
@@ -162,13 +182,26 @@ class GraphQL
                 $type = $fields;
             }
 
-            return [$name => [
+            $object = [
                 'type' => $type,
                 'args' => method_exists($class, 'args') ? $class->args() : [],
-                'resolve' => function ($value, $args, $context, $info) use ($class) {
+            ];
+
+            if (method_exists($class, 'resolve')) {
+                $object['resolve'] = function ($value, $args, $context, $info) use ($class) {
                     return $class->resolve($value, (object) $args, $context, $info);
-                },
-            ]];
+                };
+            }
+
+            if (method_exists($class, 'complexity')) {
+                $object['complexity'] = function ($childrenComplexity, $args) use ($class) {
+                    return $class->resolve($childrenComplexity, $args);
+                };
+            }
+
+            // dd($object, $class, method_exists($class, 'resolve'));
+
+            return [$name => $object];
         })->toArray();
     }
 }

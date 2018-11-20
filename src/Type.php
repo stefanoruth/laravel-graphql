@@ -8,7 +8,11 @@ class Type extends BaseType
 {
     public static function listOf($wrappedType)
     {
-        return parent::listOf(GraphQL::type($wrappedType));
+        if (is_string($wrappedType)) {
+            return parent::listOf(GraphQL::type($wrappedType));
+        }
+
+        return parent::listOf($wrappedType);
     }
 
     public static function of($wrappedType)
